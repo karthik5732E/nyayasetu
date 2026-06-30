@@ -1,0 +1,10 @@
+Draft a Non-Disclosure Agreement (NDA) clause for Indian law.
+Disclosing Party: {party_a}
+Receiving Party: {party_b}
+Duration: {duration}
+Jurisdiction: {jurisdiction}, India
+Purpose: {purpose}
+
+Include: definition of confidential information, obligations of receiving party,
+exclusions (public domain, independently developed), return/destruction of info,
+remedies for breach, governing law (Indian Contract Act 1872), survival clause.

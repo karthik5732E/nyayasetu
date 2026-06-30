@@ -1,0 +1,13 @@
+Draft a Non-Compete and Non-Solicitation clause for Indian law.
+Company: {party_a}
+Employee/Contractor: {party_b}
+Restriction Period: {duration} after termination
+Geographic Scope: {geography}
+Industry: {industry}
+
+Important: Section 27 of Indian Contract Act 1872 makes post-employment
+non-compete clauses largely unenforceable in India.
+Focus on: during-employment non-compete (enforceable), post-employment
+non-solicitation of clients and employees, trade secrets and confidential
+information protection, reasonable compensation for restrictions.
+Clearly note Indian law limitations on post-employment restrictions.

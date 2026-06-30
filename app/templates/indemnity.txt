@@ -1,0 +1,12 @@
+Draft an Indemnification and Limitation of Liability clause for Indian law.
+Indemnifying Party: {party_a}
+Indemnified Party: {party_b}
+Contract Type: {contract_type}
+Maximum Liability Cap: Rs. {liability_cap}
+Jurisdiction: {jurisdiction}, India
+
+Include: scope of indemnification (third party claims, losses, damages),
+indemnification procedure (notice, defense rights), liability cap, exclusions
+(fraud, gross negligence, wilful misconduct), consequential damages exclusion,
+mutual indemnification, survival clause, reference to Indian Contract Act 1872
+Section 124 (contract of indemnity).

@@ -1,0 +1,116 @@
+# =============================================================================
+# docker-compose.yml — Nyaya Setu Full Stack
+# Services:
+#   - api:      FastAPI backend
+#   - postgres: PostgreSQL 15 with pgvector
+#   - ollama:   Ollama with Phi-3
+# =============================================================================
+
+version: "3.8"
+
+services:
+
+  # --- PostgreSQL with pgvector ---
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: nyaya-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-nyayasetu}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - nyaya-net
+
+  # --- Ollama (Local LLM) ---
+  ollama:
+    image: ollama/ollama:latest
+    container_name: nyaya-ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    ports:
+      - "11434:11434"
+    # Pull the model on first start
+    entrypoint: >
+      sh -c "
+        ollama serve &
+        sleep 10
+        ollama pull ${OLLAMA_MODEL:-phi3}
+        echo 'Model ready. Keeping container alive...'
+        wait
+      "
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - nyaya-net
+
+  # --- FastAPI Backend ---
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nyaya-api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-nyayasetu}
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-phi3}
+      LANGSMITH_TRACING: ${LANGSMITH_TRACING:-false}
+      LANGSMITH_API_KEY: ${LANGSMITH_API_KEY:-}
+      LANGSMITH_PROJECT: ${LANGSMITH_PROJECT:-nyaya-setu}
+      APP_PORT: 8000
+      APP_HOST: 0.0.0.0
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      EMBED_MODEL: ${EMBED_MODEL:-all-MiniLM-L6-v2}
+      EMBED_DIMENSION: ${EMBED_DIMENSION:-384}
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - nyaya-net
+
+# ---------------------------------------------------------------------------
+# Volumes
+# ---------------------------------------------------------------------------
+
+volumes:
+  postgres_data:
+    driver: local
+  ollama_models:
+    driver: local
+
+# ---------------------------------------------------------------------------
+# Networks
+# ---------------------------------------------------------------------------
+
+networks:
+  nyaya-net:
+    driver: bridge

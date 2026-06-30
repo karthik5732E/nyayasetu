@@ -1,0 +1,12 @@
+Draft an Employment Contract clause for Indian law.
+Employer: {party_a}
+Employee: {party_b}
+Designation: {designation}
+Monthly Salary: Rs. {salary}
+Notice Period: {notice_period}
+Place of Work: {location}, India
+
+Include: job title and duties, salary and statutory deductions (PF/ESI),
+working hours per Shops and Establishments Act, leave entitlement (CL/SL/EL),
+notice period, termination for cause, compliance with Payment of Wages Act 1936
+and Minimum Wages Act 1948, governing law.
