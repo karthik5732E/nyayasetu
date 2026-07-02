@@ -64,6 +64,7 @@ async def intent_classifier(state: AgentState) -> Dict[str, Any]:
         return {"intent": "doc_summarize", "language": _detect_language(query)}
 
     # Use LLM for more nuanced classification
+    intent = IntentType.LEGAL_QUESTION
     prompt = INTENT_PROMPT.format(query=query)
     try:
         result = await query_ollama(prompt, max_tokens=20, temperature=0.0)
@@ -79,9 +80,8 @@ async def intent_classifier(state: AgentState) -> Dict[str, Any]:
         ]
         intent = detected_intent if detected_intent in valid_intents else IntentType.LEGAL_QUESTION
     except Exception as e:
-        logger.error(f"LLM generation failed: {type(e).__name__}: {e}")
-        answer = "I apologize, but I'm unable to generate an answer at this moment. Please try again."
-
+        logger.error(f"Intent classification failed: {type(e).__name__}: {e}, defaulting to legal_question")
+        intent = IntentType.LEGAL_QUESTION
     language = _detect_language(query)
 
     logger.info(f"Intent: {intent}, Language: {language}, Portal: {portal}")
