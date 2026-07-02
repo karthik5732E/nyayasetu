@@ -1,131 +1,327 @@
-# Nyaya Setu v2.0 — Private Offline AI Legal Assistant (Indian Law)
+# ⚖️ Nyaya Setu – Indian Legal AI
 
-> **Fully offline · Privacy-first · Production RAG architecture**
-> Built with FastAPI, LangGraph, PostgreSQL + pgvector, and a local LLM via Ollama — no API keys, no cloud costs, no data leaving your machine.
+> Private Offline AI Legal Assistant for Citizens & Legal Professionals
 
----
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![Next.js](https://img.shields.io/badge/Next.js-Frontend-black)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-pgvector-blue)
+![Ollama](https://img.shields.io/badge/Ollama-Qwen%201.5B-orange)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-## What This Is
+Nyaya Setu is an offline, privacy-first AI legal assistant trained on Indian law documents using Retrieval-Augmented Generation (RAG).
 
-Nyaya Setu is an AI-powered legal assistant trained on real Indian law — the Indian Penal Code, Code of Criminal Procedure, RTI Act, POCSO Act, Domestic Violence Act, Consumer Protection Act, Payment of Wages Act, and the Land Acquisition Act (LARR). Ask it a question in plain English about your legal rights, and it retrieves the relevant law, generates a grounded answer, and cites the exact source document and page number — entirely on your own machine, with no internet dependency at inference time.
+It helps:
+- 👨‍⚖️ Citizens (Nagrik Portal) understand legal rights
+- 🧑‍💼 Legal professionals (Vakeel Portal) perform legal research & drafting
 
-It runs as a 5-node **LangGraph agent**: intent classification → hybrid document retrieval (semantic + keyword search, fused with Reciprocal Rank Fusion) → LLM answer generation → citation formatting → hallucination/confidence validation.
-
-## Why This Matters (Architecture Highlights)
-
-- **Hybrid search, not just vector search.** Combines pgvector cosine similarity with PostgreSQL full-text search, merged via RRF — catches both semantic intent and exact legal terminology/section numbers.
-- **Grounded, not hallucinated.** Every answer is generated only from retrieved chunks, with a built-in confidence scorer that checks word-overlap between the answer and source documents, flagging low-confidence responses automatically.
-- **Fully local LLM.** Runs on Ollama with no per-query API cost — currently configured with `qwen2.5:1.5b` for a responsive experience on consumer hardware (8GB RAM friendly).
-- **Multi-portal design.** Two personas baked into the prompt layer — `nagarik` (citizen-facing, plain-language guidance) and `vakeel` (lawyer-facing, clause-citing precision).
-- **MCP server included.** Exposes 4 legal tools (search, summarize, cite, list documents) so any MCP-compatible client (e.g. Claude Desktop) can use Nyaya Setu as a tool.
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| LLM | Ollama + Qwen2.5 1.5B (swappable — Phi-3 also supported on higher-RAM machines) |
-| Embeddings | sentence-transformers (`all-MiniLM-L6-v2`), 384-dim, fully local |
-| Database | PostgreSQL 15 + pgvector + full-text search |
-| Agent Orchestration | LangGraph (5-node StateGraph with checkpointing) |
-| API | FastAPI (async) |
-| Observability | LangSmith (optional, free tier) |
-| MCP Server | Python MCP SDK |
-| Deployment | Docker + docker-compose, CPU-only friendly |
+The system provides:
+- grounded legal answers
+- exact document citations
+- page references
+- confidence scores
+- offline local inference
 
 ---
 
-## Verified Working Endpoints
+# ✨ Features
 
-Every endpoint below was tested end-to-end against the full 8-document Indian law corpus (25,000+ indexed chunks):
-
-| Method | Endpoint | What it does | Status |
-|---|---|---|---|
-| `GET` | `/api/health` | Service + DB + LLM connectivity check | ✅ |
-| `GET` | `/api/sources` | List all indexed legal documents | ✅ |
-| `POST` | `/api/query` | Full RAG legal Q&A with citations | ✅ |
-| `GET` | `/api/search` | Direct hybrid search (no LLM) | ✅ |
-| `POST` | `/api/draft-clause` | AI-drafted legal clauses (NDA, employment, non-compete, indemnity) | ✅ |
-| `POST` | `/api/summarize` | Legal document summarization | ✅ |
-| `GET` | `/api/document/{name}` | Retrieve all chunks for a specific document | ✅ |
-| `POST` | `/api/upload` | Ingest a new document on the fly | ✅ |
-| `GET` | `/docs` | Interactive Swagger UI | ✅ |
+- 🔍 Hybrid RAG Retrieval
+- 📚 Source Grounded Legal Answers
+- 📄 Exact PDF + Page Citations
+- ⚖️ Dual Portals:
+  - Nagrik Portal (Citizen Guidance)
+  - Vakeel Portal (Legal Research)
+- 🧠 Local LLM using Ollama (Qwen 1.5B)
+- 🗂️ pgvector Semantic Search
+- 🔐 Fully Offline & Private
+- 📑 Legal Clause Drafting
+- 📊 Confidence Scoring
+- ⚡ FastAPI Backend + Next.js Frontend
 
 ---
 
-## Setup (Docker, Windows/Mac/Linux)
+# 🏗️ Architecture Overview
 
-### Prerequisites
-- Docker Desktop (with WSL2 backend on Windows)
-- 8GB+ RAM recommended (4.5GB allocated to Docker minimum)
-- Git
+```text
+User
+ ↓
+Next.js Frontend
+ ↓
+FastAPI Backend
+ ↓
+LangGraph RAG Pipeline
+ ↓
+PostgreSQL + pgvector
+ ↓
+Ollama (Qwen 1.5B)
+ ↓
+Indian Legal Documents (PDFs)
+```
 
-### Quick Start
+---
+
+# 🛠️ Tech Stack
+
+## Frontend
+- Next.js
+- Tailwind CSS
+- TypeScript
+
+## Backend
+- FastAPI
+- LangGraph
+- Python
+
+## Database
+- PostgreSQL
+- pgvector
+
+## AI Stack
+- Ollama
+- Qwen 1.5B
+- sentence-transformers
+
+## Infrastructure
+- Docker
+- Docker Compose
+
+---
+
+# 📂 Project Structure
+
+```text
+nyaya-setu/
+│
+├── backend/
+├── frontend/
+├── docs/
+│   └── images/
+├── data/
+├── scripts/
+├── docker/
+├── README.md
+└── docker-compose.yml
+```
+
+---
+
+# 📸 Screenshots
+
+## 🧑 Nagrik Portal
+
+### Home Page
+
+![Home](docs/images/home.png)
+
+---
+
+### RTI Application Guidance
+
+![RTI](docs/images/rti-application.png)
+
+---
+
+### Domestic Violence Rights
+
+![Domestic Violence](docs/images/domestic-violence.png)
+
+---
+
+### Salary Rights & Employer Delays
+
+![Salary Rights](docs/images/salary-rights.png)
+
+---
+
+## ⚖️ Vakeel Portal
+
+### IPC Sections & Punishments
+
+![IPC](docs/images/ipc-sections.png)
+
+---
+
+### Legal Research Response
+
+![Legal Research](docs/images/legal-research.png)
+
+---
+
+### Clause Drafting
+
+![Clause Drafting](docs/images/clause-drafting.png)
+
+---
+
+# 📚 Indexed Indian Laws
+
+Currently indexed legal acts include:
+
+- IPC 1860
+- CrPC 1973
+- RTI Act 2005
+- POCSO Act
+- Domestic Violence Act
+- Consumer Protection Act
+- Payment of Wages Act
+- LARR 2013
+
+---
+
+# 🚀 Quick Start
+
+## 1. Clone Repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/YOUR_USERNAME/nyaya-setu.git
 cd nyaya-setu
-copy .env.example .env      # Windows
-# cp .env.example .env      # Mac/Linux
 ```
 
-Edit `.env` and confirm these values (defaults work out of the box):
-```env
-DATABASE_URL=postgresql+asyncpg://postgres:postgres@postgres:5432/nyayasetu
-OLLAMA_BASE_URL=http://ollama:11434
-OLLAMA_MODEL=qwen2.5:1.5b
-```
+---
 
-> **Note on model choice:** `qwen2.5:1.5b` is recommended for machines with 8GB RAM or less. If you have 16GB+ RAM, you can switch to `phi3` for stronger reasoning at the cost of slower inference.
+## 2. Start Services
 
-Build and start:
 ```bash
-docker-compose build
-docker-compose up -d
+docker-compose up --build
 ```
 
-Ingest the legal documents (place PDFs in `uploads/indian_laws/` first):
+---
+
+## 3. Run Backend
+
 ```bash
-docker-compose exec -T api python -m app.retrieval.ingest /app/uploads/indian_laws indian_laws
+cd backend
+uvicorn app.main:app --reload --port 8001
 ```
 
-Verify everything is healthy:
+---
+
+## 4. Run Frontend
+
 ```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+# 🔎 API Health Check
+
+Run:
+
+```powershell
 curl http://localhost:8001/api/health
 ```
 
-### Example Query
+Expected Output:
 
-```bash
-curl -X POST http://localhost:8001/api/query \
-  -H "Content-Type: application/json" \
-  -d '{"query": "What are my rights if my employer does not pay salary on time?", "language": "english", "portal": "nagarik"}'
+```json
+{
+  "status": "healthy",
+  "version": "2.0.0",
+  "ollama_connected": true,
+  "postgres_connected": true,
+  "vector_count": 25412
+}
 ```
 
 ---
 
-## Known Constraints
+# 🧪 Example Queries
 
-- **CPU-only inference.** No GPU required, but expect 10-30 seconds per query on typical consumer hardware after the model is warmed up (first query after startup takes longer while the model loads into memory).
-- **8GB RAM machines:** stick with `qwen2.5:1.5b`. Larger models (Phi-3, Llama 3) risk being killed by the OS under memory pressure when combined with PostgreSQL + the embedding model running simultaneously.
-- **Not a substitute for legal counsel.** This is an educational/awareness tool. Always consult a registered advocate for actual legal proceedings.
+## Nagrik Portal
+
+```text
+What are my rights if police arrest me without warrant?
+```
+
+```text
+How do I file an RTI application?
+```
+
+```text
+Can my employer delay salary legally?
+```
+
+```text
+What legal protection exists for domestic violence victims?
+```
 
 ---
 
-## Roadmap
+## Vakeel Portal
 
-- [ ] React frontend (Nagarik citizen portal + Vakeel lawyer portal)
-- [ ] Multi-language answer generation (Hindi, Telugu — language detection already implemented)
-- [ ] Streaming responses in the UI
-- [ ] Expanded legal corpus (more Acts, case law)
+```text
+Provide IPC sections related to criminal intimidation.
+```
+
+```text
+Summarize Section 420 IPC with punishments.
+```
+
+```text
+Draft a legal notice for breach of contract.
+```
+
+```text
+Provide CrPC provisions for anticipatory bail.
+```
 
 ---
 
-## Disclaimer
+# 📄 Adding New Legal Documents
 
-For educational purposes only. Not a substitute for a registered advocate. Always consult a qualified lawyer before taking legal action.
+1. Add PDF documents into the data/documents folder
 
-## License
+2. Run ingestion pipeline
 
-MIT License — free for personal and commercial use.
+```bash
+python ingest.py
+```
+
+3. Verify indexing
+
+```powershell
+curl http://localhost:8001/api/health
+```
+
+If vector count increases, indexing succeeded.
+
+---
+
+# 🔐 Privacy & Security
+
+- 100% Offline Inference
+- No External API Calls
+- No Data Leaves Your Machine
+- Local LLM Execution
+- Private Legal Research
+
+---
+
+# 📈 Future Improvements
+
+- Multi-language Legal Support
+- Voice-Based Legal Assistance
+- Legal Judgment Summarization
+- Citation Highlighting
+- Advanced Clause Drafting
+- Fine-tuned Indian Legal LLM
+
+---
+
+# 🤝 Contributing
+
+Pull requests are welcome.
+
+For major changes, please open an issue first to discuss improvements.
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+---
