@@ -220,8 +220,7 @@ export default function Home() {
         </header>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6">
-
+        <div className="flex-1 overflow-y-auto px-8 py-6 space-y-6 min-h-0">
           {/* Empty state */}
           {isEmpty && (
             <div className="max-w-2xl mx-auto pt-16">
