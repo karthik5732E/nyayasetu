@@ -9,55 +9,45 @@
 ![Ollama](https://img.shields.io/badge/Ollama-Qwen%201.5B-orange)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
-Nyaya Setu is an offline, privacy-first AI legal assistant trained on Indian law documents using Retrieval-Augmented Generation (RAG).
+Nyaya Setu is an offline, privacy-first AI legal assistant built for Indian citizens and legal professionals using Retrieval-Augmented Generation (RAG).
 
-It helps:
-- 👨‍⚖️ Citizens (Nagrik Portal) understand legal rights
-- 🧑‍💼 Legal professionals (Vakeel Portal) perform legal research & drafting
+The platform enables:
+- 👨‍⚖️ Citizens to understand legal rights and procedures
+- 🧑‍💼 Legal professionals to perform legal research and drafting
+- 🔐 Fully offline legal AI inference with private document retrieval
 
 The system provides:
 - grounded legal answers
-- exact document citations
+- exact legal citations
 - page references
-- confidence scores
-- offline local inference
+- confidence scoring
+- hybrid semantic retrieval
+- local AI inference using Ollama
 
 ---
 
 # ✨ Features
 
 - 🔍 Hybrid RAG Retrieval
-- 📚 Source Grounded Legal Answers
+- 📚 Source-Grounded Legal Answers
 - 📄 Exact PDF + Page Citations
 - ⚖️ Dual Portals:
   - Nagrik Portal (Citizen Guidance)
   - Vakeel Portal (Legal Research)
 - 🧠 Local LLM using Ollama (Qwen 1.5B)
-- 🗂️ pgvector Semantic Search
+- 🗂️ PostgreSQL + pgvector Semantic Search
 - 🔐 Fully Offline & Private
 - 📑 Legal Clause Drafting
 - 📊 Confidence Scoring
 - ⚡ FastAPI Backend + Next.js Frontend
+- 📱 Responsive User Interface
+- 🚫 No External API Calls
 
 ---
 
 # 🏗️ Architecture Overview
 
-```text
-User
- ↓
-Next.js Frontend
- ↓
-FastAPI Backend
- ↓
-LangGraph RAG Pipeline
- ↓
-PostgreSQL + pgvector
- ↓
-Ollama (Qwen 1.5B)
- ↓
-Indian Legal Documents (PDFs)
-```
+![Architecture](docs/images/architecture.png)
 
 ---
 
@@ -118,7 +108,7 @@ nyaya-setu/
 
 ### RTI Application Guidance
 
-![RTI](docs/images/rti-application.png)
+![RTI](docs/images/rti_application.png)
 
 ---
 
@@ -142,15 +132,62 @@ nyaya-setu/
 
 ---
 
-### Legal Research Response
+# 🧪 Testing & Evaluation
 
-![Legal Research](docs/images/legal-research.png)
+## RTI Guidance Query
+
+- Tested legal procedural guidance
+- Verified source citation retrieval
+- Verified page-number grounding
+
+![RTI Testing](docs/images/rti_application.png)
 
 ---
 
-### Clause Drafting
+## Domestic Violence Protection Query
 
-![Clause Drafting](docs/images/clause-drafting.png)
+- Tested citizen legal guidance
+- Verified contextual legal retrieval
+
+![DV Testing](docs/images/domestic-violence.png)
+
+---
+
+## IPC Legal Research Query
+
+- Tested vakil research workflow
+- Verified IPC section retrieval
+- Verified legal citation generation
+
+![IPC Testing](docs/images/ipc-sections.png)
+
+---
+
+## Salary Rights Query
+
+- Tested labor law retrieval
+- Verified Payment of Wages Act references
+
+![Salary Testing](docs/images/salary-rights.png)
+
+---
+
+## Hallucination / Out-of-Domain Testing
+
+The system was intentionally tested using non-legal questions to evaluate hallucination resistance and confidence handling.
+
+Example:
+- "What is quantum physics?"
+
+Observation:
+- The model produced lower confidence responses compared to grounded legal answers.
+
+This demonstrates:
+- confidence scoring functionality
+- domain sensitivity
+- retrieval-based grounding behavior
+
+![Hallucination Testing](docs/images/anticipatory_images.png)
 
 ---
 
@@ -166,6 +203,9 @@ Currently indexed legal acts include:
 - Consumer Protection Act
 - Payment of Wages Act
 - LARR 2013
+
+Current vector database size:
+- 25,000+ indexed legal chunks
 
 ---
 
@@ -229,65 +269,33 @@ Expected Output:
 
 ---
 
-# 🧪 Example Queries
-
-## Nagrik Portal
-
-```text
-What are my rights if police arrest me without warrant?
-```
-
-```text
-How do I file an RTI application?
-```
-
-```text
-Can my employer delay salary legally?
-```
-
-```text
-What legal protection exists for domestic violence victims?
-```
-
----
-
-## Vakeel Portal
-
-```text
-Provide IPC sections related to criminal intimidation.
-```
-
-```text
-Summarize Section 420 IPC with punishments.
-```
-
-```text
-Draft a legal notice for breach of contract.
-```
-
-```text
-Provide CrPC provisions for anticipatory bail.
-```
-
----
-
 # 📄 Adding New Legal Documents
 
-1. Add PDF documents into the data/documents folder
+## Step 1
 
-2. Run ingestion pipeline
+Add PDF files into:
+
+```text
+data/documents/
+```
+
+## Step 2
+
+Run ingestion pipeline:
 
 ```bash
 python ingest.py
 ```
 
-3. Verify indexing
+## Step 3
+
+Verify indexing:
 
 ```powershell
 curl http://localhost:8001/api/health
 ```
 
-If vector count increases, indexing succeeded.
+If vector count increases, document indexing succeeded.
 
 ---
 
@@ -298,6 +306,16 @@ If vector count increases, indexing succeeded.
 - No Data Leaves Your Machine
 - Local LLM Execution
 - Private Legal Research
+- Fully Local Vector Database
+
+---
+
+# ⚠️ Known Limitations
+
+- CPU inference may produce slower responses
+- Limited indexed Indian legal datasets
+- No multilingual support currently
+- Optimized for offline privacy over speed
 
 ---
 
@@ -305,10 +323,12 @@ If vector count increases, indexing succeeded.
 
 - Multi-language Legal Support
 - Voice-Based Legal Assistance
+- GPU Inference Optimization
 - Legal Judgment Summarization
 - Citation Highlighting
-- Advanced Clause Drafting
 - Fine-tuned Indian Legal LLM
+- Better Hallucination Detection
+- Streaming Responses
 
 ---
 
@@ -320,8 +340,8 @@ For major changes, please open an issue first to discuss improvements.
 
 ---
 
-# 📜 License
+# 👨‍💻 Author
 
-This project is licensed under the MIT License.
+Karthik
 
----
+AI + Back end Developer
